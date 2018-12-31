@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<!--[if IE 9]><html class="ie9 no-focus"><![endif]-->
+<!--[if gt IE 9]><!-->
+<html class="no-focus">
+<!--<![endif]-->
+
+<head>
+  <title itemprop='name'>Page Title</title>
+
+  <!-- charset -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0">
+
+  <!-- google search -->
+  <meta name="robots" content="all">
+  <meta name="googlebot" content="all" />
+  <meta name="google" content="notranslate" />
+  <meta name="google" content="nositelinkssearchbox" />
+
+  <meta name="author" content="Nacho Coll" />
+  <meta name="description" content="Page Description" itemprop='description' />
+  <meta name="keywords" content="Page Keywords" itemprop='keywords' />
+
+  <link rel="canonical" href="https://nachocoll.website" itemprop="url" />
+  <!-- icon -->
+  <link rel="shortcut icon" href="/img/favicon.png" />
+
+  <!-- http://ogp.me/, Open Graph -->
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Page Title" />
+  <meta property="og:description" content="Page Description" />
+  <meta property="og:url" content="https://nachocoll.website" />
+  <meta property="og:site_name" content="Site Name" />
+
+  <!-- Web fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700%7COpen+Sans:300,400,400italic,600,700" />
+
+  <!-- Bootstrap and OneUI CSS framework -->
+  <link rel="stylesheet" href="/ui-frameworks/OneUI/assets/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/ui-frameworks/OneUI/assets/css/oneui.min.css" id="css-main" />
+
+  <!-- Page Stylesheets -->
+  <link rel="stylesheet" href="/js/lib/zopim/style/zopim.css" />
+
+  <style>
+    html {
+      overflow: -moz-scrollbars-vertical;
+      overflow-y: scroll;
+    }
+  </style>
+</head>
+
+<body class="bg-white">
+
+  <div id="page-container" class="header-navbar-fixed bg-white">
+
+    <!-- Header -->
+    <header id="header-navbar">
+      <div class="content-mini content-mini-full content-boxed">
+        <!-- Header Navigation Left -->
+        <ul class="nav-header pull-left hidden-xs">
+          <li class="header-content  remove-margin-r">
+            <h1><a href="index.html" alt="home">My New App</a></h1> My new Super App!.
+          </li>
+        </ul>
+        <ul class="nav-header pull-left visible-xs hidden-sm hidden-md hidden-lg">
+          <li class="header-content remove-margin-r">
+            <a class="pull-right blue logo" style="font-size:24px !important;" href="index.html">My New App</a>
+          </li>
+        </ul>
+        <!-- END Header Navigation Left -->
+
+        <!-- Main Header Navigation -->
+        <ul class="nav-header pull-right">
+          <li class="login">
+            <form class="form-inline">
+              <div class="form-group login-form" style="display:none;">
+                <div class="form-material form-material-default push-10-r" style="margin-bottom:0px;">
+                  <input class="form-control" type="email" id="login-username" name="login-username" placeholder="email">
+                  <div class="small link push-5-t" onclick="$('.login-form').toggle();$('.Exception').hide();$('.zopim:first').show();"><a
+                      href="#">cancel</a></div>
+                </div>
+              </div>
+              <div class="form-group login-form" style="display:none;">
+                <div class="form-material form-material-default push-10-r" style="margin-bottom:0px;">
+                  <input class="form-control" type="password" id="login-password" name="login-password" placeholder="password">
+                  <div class="small link push-5-t">&nbsp;</div>
+                </div>
+              </div>
+              <div class="form-group pull-right text-right">
+                <div class="form-material form-material-default">
+                  <a class="btn btn-success login-form" type="button" style="display:none;" id="btn-login">login</a>
+                  <a class="btn btn-default login-form btn-noaction" type="button" onclick="$('.zopim:first').hide(); $('.login-form').toggle(); $('#login-username').focus(); ">login</a>
+                  <div class="small link push-5-t" onclick="$('.form-recover').toggle()"><a href="#">Forgot password</a></div>
+                </div>
+              </div>
+              <div class="form-group" style="width:10px;">
+                <i id="btn-login-loading" class="fa fa-circle-o-notch fa-spin fa-fw loading" style="display:none;"></i>
+              </div>
+            </form>
+            <div class="push-10-r" style="height:20px">
+              <div class="Exception login-UnexpectedException" style="display:none">Unexpected error. Please try again.</div>
+              <div class="Exception login-UserNotFoundException" style="display:none">Invalid email or password.</div>
+              <div class="Exception login-UserNotConfirmedException" style="display:none">Please confirm your email
+                address.</div>
+            </div>
+          </li>
+        </ul>
+        <!-- END Main Header Navigation -->
+      </div>
+    </header>
+    <!-- END Header -->
+
+    <!-- Main Container -->
+    <main id="main-container" class="bg-white" style="background-color:#fff !important;">
+      <!-- Content -->
+      <div class="bg-white">
+        <section class="content content-full content-boxed">
+
+          <!-- signup button -->
+          <div class="row text-center push-30-t">
+            <div class="col-xs-12">
+              <a href="#" onclick="$('.sign-up').toggle()">Sign up</a> to start.
+            </div>
+          </div>
+          <!-- END signup button -->
+
+          <!-- signup -->
+          <div class="row text-center push-30-t sign-up" id="signup" style="display:none;">
+            <div class="col-xs-12 col-md-6 col-md-offset-3">
+              <div class="sign-up sign-up-form" style="display:none">
+                <!-- Register Form -->
+                <div id="registration" class="registration">
+                  <div class="push-50">Enter your email and a password to sign up.</div>
+                  <form class="js-validation-register form-horizontal push-50">
+                    <div class="form-group">
+                      <div class="col-xs-12">
+                        <div class="form-material form-material-default">
+                          <input class="form-control" type="email" id="register-email" name="register-email"
+                            placeholder="Please provide your email">
+                          <label for="register-email">Email</label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-xs-12 ">
+                        <div class="form-material form-material-default">
+                          <input class="form-control" type="password" id="register-password" name="register-password"
+                            placeholder="Choose a strong password">
+                          <label for="register-password">Password</label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <div class="col-xs-12">
+                        <button class="btn btn-default" id="btn-register">Sign Up</button>&nbsp;<i id="btn-register-loading"
+                          class="fa fa-circle-o-notch fa-spin fa-fw loading" style="display:none"></i>
+                      </div>
+
+                    </div>
+                  </form>
+                </div>
+                <!-- END Register Form -->
+
+                <!-- verification -->
+                <div id="verification" class="registration" style="display:none">
+                  <form class="js-validation-verify form-horizontal push-20-t push-50">
+                    <div class="form-group">
+                      <div class="col-xs-12 col-md-6">
+                        <div class="form-material form-material-default">
+                          <input class="form-control" type="text" id="verify-code" name="verify-code" placeholder="Enter the verification code">
+                          <label for="verify-code" class="push-10">Check your email</label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-xs-12">
+                        <button class="btn btn-success" id="btn-verify">Verify</button>&nbsp;&nbsp;<a id="btn-verify-resend"
+                          href="#" class="hand">resend code</a> or <a href="#" onclick="$('.registration').toggle()">change
+                          email</a>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+                <!-- END verification -->
+
+                <!-- signup error messages -->
+                <div id="signup-messages">
+                  <div class="Exception register-UnexpectedException" style="display:none">Unexpected error. Please
+                    try again.</div>
+                  <div class="Exception register-UsernameExistsException" style="display:none">User already exists.</div>
+                  <div class="Exception register-InvalidParameterException" style="display:none">Invalid login data.
+                    Please check your values and try again.</div>
+                  <div class="Exception register-CodeMismatchException" style="display:none">Invalid code.</div>
+                  <div class="Exception register-codesent" style="display:none">Code sent. Please check your email.</div>
+                </div>
+                <!-- END signup error messages -->
+              </div>
+            </div>
+
+          </div>
+          <!-- END signup -->
+
+          <!-- login recover -->
+          <div class="row text-center push-30-t form-recover" id="form-recover" style="display:none;">
+            <div class="col-lg-offset-2 col-lg-8">
+
+              <form class="js-validation-reset form push-10-t ">
+                <div class="recover-steps" id="recover-step1">
+                  <div class="push-50">Enter your email and press the button to reset your password.</div>
+                  <div class="col-lg-4 col-lg-offset-4">
+                    <div class="form-group">
+                      <div class="form-material form-material-default">
+                        <input class="form-control text-center" type="email" id="email-recover" name="email-recover"
+                          placeholder="Enter your account email">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="form-material form-material-default">
+                        <a class="btn btn-danger" type="button" id="btn-recover">start</a>
+                      </div>
+                    </div>
+                    <div class="form-group" style="height:10px;">
+                      <i id="btn-recover-loading" class="fa fa-circle-o-notch fa-spin fa-fw loading" style="display:none;"></i>
+                    </div>
+                  </div>
+                </div>
+              </form>
+              <form class="js-validation-reset-confirm form push-10-t ">
+                <div class="recover-steps" id="recover-step2" style="display:none;">
+                  <div class="push-100-t">Check your inbox and enter the verification code to set a new password.</div>
+                  <div class="col-lg-4 col-lg-offset-4">
+                    <div class="form-group">
+                      <div class="form-material form-material-default">
+                        <input class="form-control text-center" type="text" id="code-recover" name="code-recover"
+                          placeholder="Enter the verification code">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="form-material form-material-default">
+                        <input class="form-control text-center" type="text" id="password-recover" name="password-recover"
+                          placeholder="Enter a new password">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="form-material form-material-default">
+                        <a class="btn btn-success" type="button" id="btn-confirm-recover">set password</a>
+                      </div>
+                    </div>
+                    <div class="form-group" style="height:10px;">
+                      <i id="btn-confirm-recover-loading" class="fa fa-circle-o-notch fa-spin fa-fw loading" style="display:none;"></i>
+                    </div>
+                  </div>
+                </div>
+              </form>
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="form-group small">
+                    <a href="#" onclick="$('.form-recover').toggle();$('#recover-step1').show();$('#recover-step2').hide();">cancel</a>
+                  </div>
+                  <div class="push-10-t" style="height:20px">
+                    <div class="Exception recover-UnexpectedException" style="display:none">Unexpected error. Please
+                      try again.</div>
+                    <div class="Exception recover-LimitExeeded" style="display:none">Too many attempts. Please try
+                      again after some time.</div>
+                    <div class="Exception recover-UserNotFound" style="display:none">Invalid email.</div>
+                    <div class="Exception recover-InvalidCode" style="display:none">Invalid verification code provided,
+                      please try again.</div>
+                    <div class="Exception recover-ExpiredCodeException" style="display:none">Code has expired, please
+                      start the process again.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- END login recover  -->
+
+      </div>
+      </section>
+  </div>
+  </main>
+  <!--  END Main Container  -->
+
+  <footer id="page-footer" class="bg-white font-s12 ">
+    <div class="content-mini content-mini-full content-boxed ">
+      <div class="row">
+        <div class="col-xs-12 col-sm-6 text-left">
+          <a class="font-w600" href="https://">My New App</a> &copy; <span class="js-year-copy"></span>
+        </div>
+        <div class="hidden-xs col-sm-6 text-right pull-right remove-padding-r">
+          Crafted with <i class="fa fa-heart text-city"></i> by <a href="http://nachocoll.website/" target="_blank">Nacho
+            Coll</a>.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  </div>
+
+
+  <!-- OneUI Core JS: jQuery, Bootstrap, slimScroll, scrollLock, Appear, CountTo, Placeholder, Cookie and App.js -->
+  <script src="/ui-frameworks/OneUI/assets/js/oneui.min.js"></script>
+
+  <!-- Page Plugins -->
+  <!-- validation -->
+  <script src="/ui-frameworks/OneUI/assets/js/plugins/jquery-validation/jquery.validate.min.js"></script>
+  <!-- code snippets -->
+  <script src="/js/lib/highlight/highlight.pack.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad();
+  </script>
+
+  <script id="zopim-sdk" src="/js/lib/zopim/zopim.js" data-key="4ohoXOCPinlVU3bzp4dD928jd1tfzOJm"></script>
+
+  <!-- AWS -->
+  <script src="/js/lib/jsbn.js"></script>
+  <script src="/js/lib/jsbn2.js"></script>
+  <script src="/js/lib/sjcl.js"></script>
+  <script src="/js/lib/moment.js"></script>
+
+  <script src="/js/aws/aws-sdk.js"></script>
+  <script src="/js/aws/aws-cognito-sdk.js"></script>
+  <script src="/js/aws/amazon-cognito-identity.js"></script>
+
+  <!-- -->
+  <script src="/js/constants.js"></script>
+  <script src="/js/utils.js"></script>
+
+  <!-- AWS cognito wrapper -->
+  <script id="aws-cognito-services-sdk" src="/js/aws/wrappers/cognito/cognito.aws-sdk.js" data-region="us-east-1"
+    data-userPoolId="us-east-1_fO2i4DKi2" data-clientId="44249v279he3p5cirdm2e5vqgv" data-identityPoolId="us-east-1:f8225c56-2312-4c77-9d26-25e5f9791c76"
+    data-cognitoApiGateway="https://46wk4d94g7.execute-api.us-east-1.amazonaws.com/test/" data-webApiGateway="https://f90zwvyb19.execute-api.us-east-1.amazonaws.com/test/"></script>
+
+  <!-- page inits -->
+  <script>
+    $(function () {
+      'use strict';
+      RegistrationForm.init(function(){ console.log('sign up ok'); }, function(){ console.log('confirmation ok'); });
+      LoginForm.init(function(){ console.log('login ok');});
+      ResetPasswordForm.init();
+    });
+  </script>
+</body>
+
+</html>
