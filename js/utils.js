@@ -104,6 +104,9 @@ var Utils = (function () {
         }
       }
     },
+    resetExceptions: function(){
+      $('.Exception').hide();
+    },
     ready: function (button, disabledCheck) {
       $('.btn:not(.btn-noaction)').not('.editor-command').removeClass('disabled');
       if (button) {

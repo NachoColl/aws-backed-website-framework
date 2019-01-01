@@ -1,20 +1,22 @@
 /*jslint browser: true, devel: true, white: true */
 /*global
-$,AWS,AWSCognito,
+$,window,AWS,AWSCognito,
 Cookies,JSON,
 AWSPageInit
 Utils
 */
-var AWSSDKArgs = document.getElementById('aws-cognito-services-sdk');
-var AWSConstants = {
-  region: AWSSDKArgs.getAttribute('data-region'),
-  cognitoEndpoint: 'cognito-idp.' + AWSSDKArgs.getAttribute('data-region') + '.amazonaws.com',
-  userPoolId: AWSSDKArgs.getAttribute('data-userPoolId'),
-  clientId: AWSSDKArgs.getAttribute('data-clientId'),
-  identityPoolId: AWSSDKArgs.getAttribute('data-identityPoolId'),
-  cognitoApiGateway: AWSSDKArgs.getAttribute('data-cognitoApiGateway'),
-  webApiGateway: AWSSDKArgs.getAttribute('data-webApiGateway'),
-};
+var
+  AWSSDKArgs = document.getElementById('aws-cognito-services-sdk'),
+  AWSConstants = {
+    region: AWSSDKArgs.getAttribute('data-region'),
+    cognitoEndpoint: 'cognito-idp.' + AWSSDKArgs.getAttribute('data-region') + '.amazonaws.com',
+    userPoolId: AWSSDKArgs.getAttribute('data-userPoolId'),
+    clientId: AWSSDKArgs.getAttribute('data-clientId'),
+    identityPoolId: AWSSDKArgs.getAttribute('data-identityPoolId'),
+    cognitoApiGateway: AWSSDKArgs.getAttribute('data-cognitoApiGateway'),
+    webApiGateway: AWSSDKArgs.getAttribute('data-webApiGateway')
+  };
+
 /* Initialize AWS SDK global configs */
 AWS.config.region = AWSConstants.region;
 AWS.config.credentials = new AWS.CognitoIdentityCredentials({
@@ -24,271 +26,143 @@ AWSCognito.config.region = AWSConstants.region;
 AWSCognito.config.credentials = new AWS.CognitoIdentityCredentials({
   IdentityPoolId: AWSConstants.identityPoolId
 });
-var userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool({
-  UserPoolId: AWSConstants.userPoolId,
-  ClientId: AWSConstants.clientId
-});
+var
+  userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool({
+    UserPoolId: AWSConstants.userPoolId,
+    ClientId: AWSConstants.clientId
+  });
+
 /* for logged user */
-var cognitoUser = null,
-  email = null,
-  password = null,
+var
+  cognitoUser = null,
   token = Cookies.get('idToken'),
   refreshToken = Cookies.get('refreshToken');
 
-var AWSUtils = (function () {
-  "use strict";
-  return {
-    refreshTokens: function () {
-      userPool.client.makeUnauthenticatedRequest('initiateAuth', {
-        ClientId: AWSConstants.clientId,
-        AuthFlow: 'REFRESH_TOKEN_AUTH',
-        AuthParameters: {
-          "REFRESH_TOKEN": refreshToken
+var
+  Cognito = (function () {
+    "use strict";
+    return {
+      signup: function (email, password, callbackSuccess, callbackError) {
+        var
+          attributeList = [],
+          dataEmail = {
+            Name: 'email',
+            Value: email.toLowerCase()
+          },
+          attributeEmail = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserAttribute(dataEmail);
+        attributeList.push(attributeEmail);
+        userPool.signUp(Utils.newGuid(), password, attributeList, null, function (err, result) {
+          if (err) {
+            if (callbackError !== 'undefined' && $.isFunction(callbackError)) {
+              callbackError(err);
+            }
+          } else {
+            cognitoUser = result.user;
+            if (callbackSuccess !== 'undefined' && $.isFunction(callbackSuccess)) {
+              callbackSuccess();
+            }
+          }
+        });
+      },
+      verify: function (code, callbackSuccess, callbackError) {
+        cognitoUser.confirmRegistration(code, true, function (err, result) {
+          if (err) {
+            if (callbackError !== 'undefined' && $.isFunction(callbackError)) {
+              callbackError(err);
+            }
+          } else {
+            if (callbackSuccess !== 'undefined' && $.isFunction(callbackSuccess)) {
+              callbackSuccess();
+            }
+          }
+        });
+      },
+      resend: function (callbackSuccess, callbackError) {
+        cognitoUser.resendConfirmationCode(function (err, result) {
+          if (err) {
+            if (callbackError !== 'undefined' && $.isFunction(callbackError)) {
+              callbackError(err);
+            }
+          } else {
+            if (callbackSuccess !== 'undefined' && $.isFunction(callbackSuccess)) {
+              callbackSuccess();
+            }
+          }
+        });
+      },
+      refreshTokens: function () {
+        userPool.client.makeUnauthenticatedRequest('initiateAuth', {
+          ClientId: AWSConstants.clientId,
+          AuthFlow: 'REFRESH_TOKEN_AUTH',
+          AuthParameters: {
+            "REFRESH_TOKEN": refreshToken
+          }
+        }, function (err, authResult) {
+          if (!err) {
+            Cookies.set('accessToken', authResult.AuthenticationResult.AccessToken);
+            Cookies.set('idToken', authResult.AuthenticationResult.IdToken);
+            var logins = {};
+            logins[AWSConstants.cognitoEndpoint + "/" + AWSConstants.userPoolId] = authResult.AuthenticationResult.IdToken;
+            AWS.config.update({
+              credentials: new AWS.CognitoIdentityCredentials({
+                IdentityPoolId: AWSConstants.identityPoolId,
+                Logins: logins
+              })
+            });
+            AWS.config.credentials.get(function (err) {
+              if (err) {
+                console.log(err, err.stack);
+              }
+            });
+          } else {
+            Cognito.logout();
+          }
+        });
+        setTimeout(Cognito.refreshTokens, 3000000); // refresh after 50 minutes.
+      },
+      logout: function () {
+        Cookies.set('accessToken', '');
+        Cookies.set('idToken', '');
+        Cookies.set('refreshToken', '');
+        if (cognitoUser !== null) {
+          cognitoUser.signOut();
+          cognitoUser = null;
         }
-      }, function (err, authResult) {
-        if (!err) {
-          Cookies.set('accessToken', authResult.AuthenticationResult.AccessToken);
-          Cookies.set('idToken', authResult.AuthenticationResult.IdToken);
-          var logins = {};
-          logins[AWSConstants.cognitoEndpoint + "/" + AWSConstants.userPoolId] = authResult.AuthenticationResult.IdToken;
-          AWS.config.update({
-            credentials: new AWS.CognitoIdentityCredentials({
+        AWS.config.credentials.clearCachedId();
+        window.location.href = AWSSDKArgs.getAttribute('data-home');
+      },
+      initializePageAuthentication: function (callback) {
+        if (window.location.href.indexOf(AWSSDKArgs.getAttribute('data-home')) <= 0) {
+          if (!token || !refreshToken) {
+            Cognito.logout();
+          } else {
+            // Initialize AWS SDK
+            var logins = {};
+            logins[AWSConstants.cognitoEndpoint + "/" + AWSConstants.userPoolId] = token;
+            AWS.config.credentials = new AWS.CognitoIdentityCredentials({
               IdentityPoolId: AWSConstants.identityPoolId,
               Logins: logins
-            })
-          });
-          AWS.config.credentials.get(function (err) {
-            if (err) {
-              console.log(err, err.stack);
-            }
-          });
-        } else {
-          AWSUtils.logout();
-        }
-      });
-      setTimeout(AWSUtils.refreshTokens, 3000000); // refresh after 50 minutes.
-    },
-    logout: function () {
-      Cookies.set('accessToken', '');
-      Cookies.set('idToken', '');
-      Cookies.set('refreshToken', '');
-      if (cognitoUser !== null) {
-        cognitoUser.signOut();
-        cognitoUser = null;
-      }
-      AWS.config.credentials.clearCachedId();
-      if (typeof Utils.goHome !== 'undefined' && $.isFunction(Utils.goHome())) {
-        Utils.goHome();
-      } else {
-        window.location.href = "index.html";
-      }
-    },
-    initializePageAuthentication: function (pageException) {
-      if (window.location.href.indexOf(pageException) <= 0) {
-        if (!token || !refreshToken) {
-          AWSUtils.logout();
-        } else {
-          // Initialize AWS SDK
-          var logins = {};
-          logins[AWSConstants.cognitoEndpoint + "/" + AWSConstants.userPoolId] = token;
-          AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-            IdentityPoolId: AWSConstants.identityPoolId,
-            Logins: logins
-          });
-          AWSUtils.refreshTokens();
-          AWS.config.credentials.get(function (err) {
-            if (err) {
-              console.log(err, err.stack);
-            } else {
-              if (typeof AWSPageInit !== 'undefined' && $.isFunction(AWSPageInit)) {
-                AWSPageInit();
+            });
+            Cognito.refreshTokens();
+            AWS.config.credentials.get(function (err) {
+              if (err) {
+                console.log(err, err.stack);
+              } else {
+                if (typeof callback !== 'undefined' && $.isFunction(callback)) {
+                  callback();
+                }
               }
-            }
-          });
+            });
+          }
+        } else {
+          if (typeof callback !== 'undefined' && $.isFunction(callback)) {
+            callback();
+          }
         }
       }
-    }
-  };
-}());
-
-$(function () {
-  "use strict";
-  AWSUtils.initializePageAuthentication('index.html');
-});
-
-/****************************************************/
-/* HTML elements:									                  */
-/*	[inputs]										                    */
-/*  - register-email								                */
-/*  - register-password								              */
-/*  - verify-code									                  */
-/*	[buttons]										                    */
-/*  - btn-register									                */
-/*  - btn-verify									                  */
-/*  - btn-verify-resend								              */
-/****************************************************/
-var RegistrationForm = (function () {
-  "use strict";
-  var signupCallBack = null,
-    confirmCallback = null,
-    signup = function () {
-      $('.Exception').hide();
-      var attributeList = [],
-        dataEmail = {
-          Name: 'email',
-          Value: email.toLowerCase()
-        },
-        attributeEmail = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserAttribute(dataEmail);
-      attributeList.push(attributeEmail);
-      userPool.signUp(Utils.newGuid(), password, attributeList, null, function (err, result) {
-        Utils.ready();
-        if (err) {
-          console.log(err);
-          showRegistrationError(err);
-          return;
-        }
-        cognitoUser = result.user;
-        $('.registration').toggle();
-
-        if (typeof signupCallBack !== 'undefined' && $.isFunction(signupCallBack)) {
-          signupCallBack();
-        }
-      });
-    },
-    verify = function (code) {
-      $('.Exception').hide();
-      cognitoUser.confirmRegistration(code, true, function (err, result) {
-        Utils.ready();
-        if (err) {
-          showRegistrationError(err);
-          return;
-        }
-        if (typeof confirmCallback !== 'undefined' && $.isFunction(confirmCallback)) {
-          confirmCallback();
-        }
-        LoginForm.login();
-      });
-    },
-    resend = function () {
-      $('.Exception').hide();
-      cognitoUser.resendConfirmationCode(function (err, result) {
-        Utils.ready();
-        if (err) {
-          showRegistrationError(err);
-          return;
-        }
-        $('.register-codesent').show();
-      });
-    },
-    showRegistrationError = function (err) {
-      switch (err.code) {
-        case "InvalidParameterException":
-          $('.register-InvalidParameterException').show();
-          break;
-        case "UsernameExistsException":
-          $('.register-UsernameExistsException').show();
-          break;
-        case "CodeMismatchException":
-          $('.register-CodeMismatchException').show();
-          break;
-        case "UserLambdaValidationException":
-          $('.register-UsernameExistsException').show();
-          break;
-        default:
-          $('.register-UnexpectedException').show();
-          break;
-      }
-    },
-    initForm = function () {
-      $('.js-validation-register').validate({
-        errorClass: 'help-block text-right animated fadeInDown',
-        errorElement: 'div',
-        errorPlacement: function (error, e) {
-          $(e).parents('.form-group > div').append(error);
-        },
-        highlight: function (e) {
-          $(e).closest('.form-group').removeClass('has-error').addClass('has-error');
-          $(e).closest('.help-block').remove();
-        },
-        success: function (e) {
-          $(e).closest('.form-group').removeClass('has-error');
-          $(e).closest('.help-block').remove();
-        },
-        rules: {
-          'register-email': {
-            required: true,
-            email: true
-          },
-          'register-password': {
-            required: true,
-            minlength: 6
-          }
-        },
-        messages: {
-          'register-email': 'Please enter a valid email address',
-          'register-password': {
-            required: 'Please provide a password',
-            minlength: 'Your password must be at least 6 characters long'
-          }
-        }
-      });
-      $('.js-validation-verify').validate({
-        errorClass: 'help-block text-right animated fadeInDown',
-        errorElement: 'div',
-        errorPlacement: function (error, e) {
-          $(e).parents('.form-group > div').append(error);
-        },
-        highlight: function (e) {
-          $(e).closest('.form-group').removeClass('has-error').addClass('has-error');
-          $(e).closest('.help-block').remove();
-        },
-        success: function (e) {
-          $(e).closest('.form-group').removeClass('has-error');
-          $(e).closest('.help-block').remove();
-        },
-        rules: {
-          'verify-code': {
-            required: true
-          }
-        },
-        messages: {
-          'verify-code': {
-            required: 'Please provide a code'
-          }
-        }
-      });
-      $('#btn-register').on("click", function (e) {
-        e.preventDefault();
-        if ($('.js-validation-register').valid() /* && myCaptchaResponse!=null */) {
-          email = $('#register-email').val();
-          password = $('#register-password').val();
-          signup();
-        } else {
-          Utils.ready();
-        }
-      });
-      $('#btn-verify').on("click", function (e) {
-        e.preventDefault();
-        if ($('.js-validation-verify').valid() /* && myCaptchaResponse!=null */) {
-          verify($('#verify-code').val());
-        } else {
-          Utils.ready();
-        }
-      });
-      $('#btn-verify-resend').on("click", function (e) {
-        e.preventDefault();
-        resend();
-        Utils.ready();
-      });
     };
-  return {
-    init: function (callBack1, callback2) {
-      signupCallBack = callBack1;
-      confirmCallback = callback2;
-      initForm();
-    }
-  };
-}());
+  }());
+
 
 /****************************************************/
 /* HTML elements:									                  */
