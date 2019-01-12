@@ -1,2 +1,3 @@
-# aws-js-sdk-wrapper
-AWS Javascript SDKs wrapper.
+AWS Cognito backed website framework
+
+
