@@ -6,6 +6,12 @@
     display: block !important;
 }
 
+@media only screen and (max-width: 1280px){
+    .zopim-button {
+        display: none !important;
+    }
+}
+
 .zopim-button {
     left: 50% !important;
     margin-left: 350px !important;

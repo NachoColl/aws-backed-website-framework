@@ -1,6 +1,6 @@
-/*jslint browser: true, devel: true, white: true, plusplus: true */
+/*jslint browser: true, devel: true, white: true */
 /*global
-$,
+$,window,
 AWS,AWSConstants,
 token
 */
@@ -39,7 +39,7 @@ var Utils = (function () {
     // json(p, 'GetUserLogSubscriptions', f);
     apiJsonCall: function (p, c, f, fe, url, k) {
       var jsonText = p ? JSON.stringify(p) : null,
-        headers = k != null ? {
+        headers = k !== undefined ? {
           'Content-Type': 'application/json',
           'X-Api-Key': k
         } : {
@@ -103,6 +103,9 @@ var Utils = (function () {
           return sParameterName[1] === undefined ? true : sParameterName[1];
         }
       }
+    },
+    resetExceptions: function(){
+      $('.Exception').hide();
     },
     ready: function (button, disabledCheck) {
       $('.btn:not(.btn-noaction)').not('.editor-command').removeClass('disabled');
