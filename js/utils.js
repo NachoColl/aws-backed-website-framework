@@ -6,11 +6,11 @@ token
 */
 
 
-var Utils = (function () { 
+var Utils = (function () {
   'use strict';
   var s4 = function () {
-      return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-    },
+    return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+  },
     guid = function () {
       return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     },
@@ -21,11 +21,14 @@ var Utils = (function () {
       var percent = percentage(number1, number2),
         progressBarWidth = percent * $element.width() / 100;
       $element.find(':nth-child(3)>div').removeClass();
-      if (percent > 60) {
+      if (percent > 60)
+      {
         $element.find(':nth-child(3)>div').addClass('success');
-      } else if (percent < 20) {
+      } else if (percent < 20)
+      {
         $element.find(':nth-child(3)>div').addClass('danger');
-      } else {
+      } else
+      {
         $element.find(':nth-child(3)>div').addClass('warning');
       }
       $element.find(':nth-child(3)>div').animate({
@@ -43,28 +46,32 @@ var Utils = (function () {
           'Content-Type': 'application/json',
           'X-Api-Key': k
         } : {
-          'Content-Type': 'application/json',
-          'Authorization': token,
-          'IdentityId': AWS.config.credentials.identityId
-        };
+            'Content-Type': 'application/json',
+            'Authorization': token,
+            'IdentityId': AWS.config.credentials.identityId
+          };
 
-        $.ajax({
+      $.ajax({
         method: 'POST',
         url: (url || AWSConstants.webApiGateway) + c,
         data: jsonText,
         headers: headers,
         dataType: 'json',
         success: function (response) {
-          if (f) {
+          if (f)
+          {
             f(response);
-          } else {
+          } else
+          {
             Utils.ready();
           }
         },
         error: function (xhr, textStatus, errorThrown) {
-          if (fe) {
+          if (fe)
+          {
             fe(xhr, textStatus, errorThrown);
-          } else {
+          } else
+          {
             Utils.ready();
             console.log('unexpected error on AJAX call');
           }
@@ -87,7 +94,8 @@ var Utils = (function () {
       }, 3000);
     },
     notify: function (m) {
-      if ($.notify) {
+      if ($.notify)
+      {
         $.notify({
           message: m
         });
@@ -97,36 +105,44 @@ var Utils = (function () {
       var sPageURL = decodeURIComponent(window.location.search.substring(1)),
         sURLVariables = sPageURL.split('&'),
         sParameterName, i;
-      for (i = 0; i < sURLVariables.length; i++) {
+      for (i = 0; i < sURLVariables.length; i++)
+      {
         sParameterName = sURLVariables[i].split('=');
-        if (sParameterName[0] === sParam) {
+        if (sParameterName[0] === sParam)
+        {
           return sParameterName[1] === undefined ? true : sParameterName[1];
         }
       }
     },
-    resetExceptions: function(){
+    resetExceptions: function () {
       $('.Exception').hide();
     },
     ready: function (button, disabledCheck) {
       $('.btn:not(.btn-noaction)').not('.editor-command').removeClass('disabled');
-      if (button) {
-        if (disabledCheck) {
+      if (button)
+      {
+        if (disabledCheck)
+        {
           $('#' + button + '-loading').hide();
-        } else {
+        } else
+        {
           $('#' + button + '-loading').removeClass('fa-circle-o-notch fa-spin').addClass('fa-check text-success').fadeIn();
           setTimeout(function () {
             $('#' + button + '-loading').hide().removeClass('fa-check text-success').addClass('fa-circle-o-notch fa-spin');
           }, 3000);
         }
-      } else {
+      } else
+      {
         $('.loading').hide();
       }
     },
     loading: function (button) {
       $('.btn:not(.btn-noaction)').not('.editor-command').addClass('disabled');
-      if (button) {
+      if (button)
+      {
         $('#' + button + '-loading').show();
-      } else {
+      } else
+      {
         $('.loading').show();
       }
     },
@@ -141,7 +157,8 @@ var Utils = (function () {
         monthDaysArray = [],
         monthDays = new Date(year, month, 0).getDate(),
         i = 0;
-      for (i = 0; i < monthDays; i++) {
+      for (i = 0; i < monthDays; i++)
+      {
         monthDaysArray.push(i + 1);
       }
       monthDaysArray.sort(function (a, b) {
@@ -156,7 +173,8 @@ var Utils = (function () {
         today = new Date().getDate(),
         monthDays = new Date(year, month, 0).getDate(),
         i = 0;
-      for (i = 0; i < monthDays && i < today; i++) {
+      for (i = 0; i < monthDays && i < today; i++)
+      {
         monthDaysArray.push(i + 1);
       }
       monthDaysArray.sort(function (a, b) {
@@ -167,6 +185,9 @@ var Utils = (function () {
     },
     matchCount: function (s, text) {
       return text.split(s).length - 1;
+    },
+    getPrice: function (n) {
+      return parseFloat(Math.round(n * 100) / 100).toFixed(2);
     }
   };
 }());
@@ -194,10 +215,16 @@ $(function () {
   $(".only-letters-no-space-underscore").keyup(function () {
     this.value = this.value.replace(/[^a-zA-Z0-9\_ ]+/g, "").replace(/ /g, "_");
   });
+  $(".only-letters").keyup(function () {
+    this.value = this.value.replace(/[^a-zA-Z0-9]+/g, "");
+  });
+  $(".us-price").keyup(function () {
+    this.value = this.value.replace(/[^0-9\.]+/g, "");
+
+  });
   $(".only-letters-no-space-hyphen").keyup(function () {
     this.value = this.value.replace(/[^a-zA-Z0-9\- ]+/g, "").replace(/ /g, "-");
   });
-
   $('.btn:not(.btn-noaction)').each(function () {
     $(this).on("click", function (e) {
       e.preventDefault();
@@ -205,25 +232,29 @@ $(function () {
       $('#' + $(this).attr('id') + '-loading').show();
     });
   });
-  if (!String.prototype.startsWith) {
+  if (!String.prototype.startsWith)
+  {
     (function () {
       // needed to support `apply`/`call` with `undefined`/`null`
       var defineProperty = (function () {
         // IE 8 only supports `Object.defineProperty` on DOM elements
-        try {
+        try
+        {
           var object = {},
             $defineProperty = Object.defineProperty,
             result = $defineProperty(object, object, object) && $defineProperty;
-            return result;
+          return result;
         } catch (error) {}
       }());
       var toString = {}.toString,
         startsWith = function (search) {
-          if (this == null) {
+          if (this == null)
+          {
             throw TypeError();
           }
           var string = String(this);
-          if (search && toString.call(search) == '[object RegExp]') {
+          if (search && toString.call(search) == '[object RegExp]')
+          {
             throw TypeError();
           }
           var stringLength = string.length;
@@ -232,29 +263,35 @@ $(function () {
           var position = arguments.length > 1 ? arguments[1] : undefined;
           // `ToInteger`
           var pos = position ? Number(position) : 0;
-          if (pos != pos) { // better `isNaN`
+          if (pos != pos)
+          { // better `isNaN`
             pos = 0;
           }
           var start = Math.min(Math.max(pos, 0), stringLength);
           // Avoid the `indexOf` call if no match is possible
-          if (searchLength + start > stringLength) {
+          if (searchLength + start > stringLength)
+          {
             return false;
           }
           var index = -1;
-          while (++index < searchLength) {
-            if (string.charCodeAt(start + index) != searchString.charCodeAt(index)) {
+          while (++index < searchLength)
+          {
+            if (string.charCodeAt(start + index) != searchString.charCodeAt(index))
+            {
               return false;
             }
           }
           return true;
         };
-      if (defineProperty) {
+      if (defineProperty)
+      {
         defineProperty(String.prototype, 'startsWith', {
           'value': startsWith,
           'configurable': true,
           'writable': true
         });
-      } else {
+      } else
+      {
         String.prototype.startsWith = startsWith;
       }
     }());
