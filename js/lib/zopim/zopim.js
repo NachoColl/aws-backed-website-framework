@@ -3,21 +3,25 @@
 $,window,$zopim
 */
 var zopimArgs = document.getElementById('zopim-sdk');
-window.$zopim||(function(d,s){var z=$zopim=function(c){z._.push(c)},$=z.s=
-d.createElement(s),e=d.getElementsByTagName(s)[0];z.set=function(o){z.set.
-_.push(o)};z._=[];z.set._=[];$.async=!0;$.setAttribute("charset","utf-8");
-$.src="https://v2.zopim.com/?" + zopimArgs.getAttribute("data-key");z.t=+new Date;$.
-type="text/javascript";e.parentNode.insertBefore($,e)})(document,"script");
+window.$zopim || (function (d, s) {
+    var z = $zopim = function (c) { z._.push(c) }, $ = z.s =
+        d.createElement(s), e = d.getElementsByTagName(s)[ 0 ]; z.set = function (o) {
+            z.set.
+                _.push(o)
+        }; z._ = []; z.set._ = []; $.async = !0; $.setAttribute("charset", "utf-8");
+    $.src = "https://v2.zopim.com/?" + zopimArgs.getAttribute("data-key"); z.t = +new Date; $.
+        type = "text/javascript"; e.parentNode.insertBefore($, e)
+})(document, "script");
 
 $zopim(function () {
     "use strict";
     $zopim.livechat.set({
-        name: 'Invoicing Service User'
+        name: 'Me (' + zopimArgs.getAttribute("data-username") + ')'
     });
 
     $zopim.livechat.theme.setColors({
-        badge: '#70b9eb',
-        primary: '#70b9eb'
+        badge: zopimArgs.getAttribute("data-color"),
+        primary: zopimArgs.getAttribute("data-color")
     });
 
     $zopim.livechat.theme.reload();
@@ -54,7 +58,7 @@ $zopim(function () {
             });
             // change the badge position
             $('.zopim:eq(1)').addClass('zopim-badge');
-        } catch(err) { }
+        } catch (err) { }
 
     }, 800);
 });
