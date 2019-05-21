@@ -403,21 +403,6 @@ header .header-content .header-content-inner p {
   padding-left: 0;
 }
 
-#register-dialog .help-block,
-#login-recovery .help-block,
-#login-dialog .help-block {
-  font-size: 12px;
-  text-align: center;
-}
-
-#register-dialog .modal-content,
-#login-recovery .modal-content,
-#login-dialog .modal-content {
-  background-image: url('../_images/moustache-op.png');
-  background-repeat: no-repeat;
-  background-position: top 10px center;
-}
-
 :focus::-webkit-input-placeholder {
   color: transparent;
   -webkit-transition: all 0.35s;
