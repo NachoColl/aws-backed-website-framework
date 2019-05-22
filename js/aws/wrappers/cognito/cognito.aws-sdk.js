@@ -2,7 +2,7 @@
 /*global
 $,window,AWS,AWSCognito,
 Cookies,JSON,
-AWSPageInit
+AWSPageInit,Cognito
 Utils
 */
 var
@@ -13,8 +13,8 @@ var
     userPoolId: AWSSDKArgs.getAttribute('data-userPoolId'),
     clientId: AWSSDKArgs.getAttribute('data-clientId'),
     identityPoolId: AWSSDKArgs.getAttribute('data-identityPoolId'),
-    cognitoApiGateway: AWSSDKArgs.getAttribute('data-cognitoApiGateway'),
-    webApiGateway: AWSSDKArgs.getAttribute('data-webApiGateway')
+    /* apiEndpoint must implement cognito/reset and cognito/confirm APIs */
+    apiEndpoint: AWSSDKArgs.getAttribute('data-apiEndpoint')
   };
 
 /* Initialize AWS SDK global configs */
@@ -139,7 +139,7 @@ var
             Cookies.set('accessToken', authResult.AuthenticationResult.AccessToken);
             Cookies.set('idToken', authResult.AuthenticationResult.IdToken);
             var logins = {};
-            logins[AWSConstants.cognitoEndpoint + "/" + AWSConstants.userPoolId] = authResult.AuthenticationResult.IdToken;
+            logins[ AWSConstants.cognitoEndpoint + "/" + AWSConstants.userPoolId ] = authResult.AuthenticationResult.IdToken;
             AWS.config.update({
               credentials: new AWS.CognitoIdentityCredentials({
                 IdentityPoolId: AWSConstants.identityPoolId,
@@ -175,7 +175,7 @@ var
           } else {
             // Initialize AWS SDK
             var logins = {};
-            logins[AWSConstants.cognitoEndpoint + "/" + AWSConstants.userPoolId] = token;
+            logins[ AWSConstants.cognitoEndpoint + "/" + AWSConstants.userPoolId ] = token;
             AWS.config.credentials = new AWS.CognitoIdentityCredentials({
               IdentityPoolId: AWSConstants.identityPoolId,
               Logins: logins
