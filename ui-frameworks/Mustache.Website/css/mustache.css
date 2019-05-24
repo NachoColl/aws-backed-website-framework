@@ -11,7 +11,7 @@
  }
 
  #main-container section:first-child {
-   background: url('assets/custom/img/moustache-op.png') no-repeat top -20px right 0px;
+   background: url('../img/moustache-op.png') no-repeat top -20px right 0px;
  }
 
  .centered-chart {
