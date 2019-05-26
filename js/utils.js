@@ -170,6 +170,9 @@ var Utils = (function () {
     },
     getPrice: function (n) {
       return parseFloat(Math.round(n * 100) / 100).toFixed(2);
+    },
+    setActive: function (o) {
+      $(o).addClass('active');
     }
   };
 }());

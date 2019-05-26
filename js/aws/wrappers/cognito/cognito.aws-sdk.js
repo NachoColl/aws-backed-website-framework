@@ -166,7 +166,11 @@ var
           cognitoUser = null;
         }
         AWS.config.credentials.clearCachedId();
-        window.location.href = AWSSDKArgs.getAttribute('data-home');
+        if (window.location.href.indexOf('127.0.0.1:') <= 0) {
+          window.location.href = AWSSDKArgs.getAttribute('data-home');
+        } else {
+          window.location.href = '/src/code/UI/index.html';
+        }
       },
       initializePageAuthentication: function (callback) {
         if (window.location.href.indexOf(AWSSDKArgs.getAttribute('data-home')) <= 0) {
