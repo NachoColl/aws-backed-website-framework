@@ -77,6 +77,9 @@ var Utils = (function () {
     percentage: function (n1, n2) {
       return percentage(n1, n2);
     },
+    timestampToLocal: function (t) {
+      return new Date(t).toLocaleString();
+    },
     progressBar: function (n1, n2, $element) {
       progressBar(n1, n2, $element);
     },
