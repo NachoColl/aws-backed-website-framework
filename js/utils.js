@@ -8,9 +8,10 @@ token
 
 var Utils = (function () {
   'use strict';
-  var s4 = function () {
-    return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-  },
+  var
+    s4 = function () {
+      return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+    },
     guid = function () {
       return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     },
@@ -97,7 +98,8 @@ var Utils = (function () {
       }
     },
     getUrlParameter: function getUrlParameter(sParam) {
-      var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+      var
+        sPageURL = decodeURIComponent(window.location.search.substring(1)),
         sURLVariables = sPageURL.split('&'),
         sParameterName, i;
       for (i = 0; i < sURLVariables.length; i++) {
@@ -232,7 +234,8 @@ $(function () {
           return result;
         } catch (error) { }
       }());
-      var toString = {}.toString,
+      var
+        toString = {}.toString,
         startsWith = function (search) {
           if (this == null) {
             throw TypeError();
