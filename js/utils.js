@@ -78,6 +78,9 @@ var Utils = (function () {
     percentage: function (n1, n2) {
       return percentage(n1, n2);
     },
+    localTimestamp: function () {
+      return new Date().toLocaleString();
+    },
     timestampToLocal: function (t) {
       return new Date(t).toLocaleString();
     },
