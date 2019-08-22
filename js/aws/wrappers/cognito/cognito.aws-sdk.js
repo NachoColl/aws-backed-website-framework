@@ -155,7 +155,7 @@ var
             Cognito.logout();
           }
         });
-        setTimeout(Cognito.refreshTokens, 3000000); // refresh after 50 minutes.
+        setTimeout(Cognito.refreshTokens, 1200000); // refresh after 20 minutes.
       },
       logout: function () {
         Cookies.set('accessToken', '');
@@ -173,6 +173,7 @@ var
         }
       },
       initializePageAuthentication: function (callback) {
+
         if (window.location.href.indexOf(AWSSDKArgs.getAttribute('data-home')) <= 0) {
           if (!token || !refreshToken) {
             Cognito.logout();
@@ -184,6 +185,7 @@ var
               IdentityPoolId: AWSConstants.identityPoolId,
               Logins: logins
             });
+
             Cognito.refreshTokens();
             AWS.config.credentials.get(function (err) {
               if (err) {
