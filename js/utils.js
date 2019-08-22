@@ -181,6 +181,15 @@ var Utils = (function () {
     },
     setActive: function (o) {
       $(o).addClass('active');
+    },
+    pad: function pad(num, size) {
+      var s = num + "";
+      while (s.length < size) s = "0" + s;
+      return s;
+    },
+    timeOffset: function () {
+      var offset = new Date().getTimezoneOffset();
+      return offset.toString().substr(0, 1) + Utils.pad(offset.toString().substr(1) / 60, 2);
     }
   };
 }());
