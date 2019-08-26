@@ -169,7 +169,7 @@ var
         if (window.location.href.indexOf('127.0.0.1:') <= 0) {
           window.location.href = AWSSDKArgs.getAttribute('data-home');
         } else {
-          window.location.href = '/src/code/UI/index.html';
+          window.location.href = '/src/UI/index.html';
         }
       },
       initializePageAuthentication: function (callback) {
