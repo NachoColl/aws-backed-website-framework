@@ -35,6 +35,7 @@ var Utils = (function () {
       $element.find(':nth-child(2)').html(number1 + ' / ' + number2);
     };
   return {
+
     // var p = [userKey];
     // var f = function (s) { if (s != "-1") fillLogSubscriptions(s); else showMessage(texts[1]); };
     // json(p, 'GetUserLogSubscriptions', f);
@@ -99,6 +100,27 @@ var Utils = (function () {
           message: m
         });
       }
+    },
+    getUrlContent: function (url, f, fe) {
+      $.ajax({
+        type: "GET",
+        url: url,
+        success: function (response) {
+          if (f) {
+            f(response);
+          } else {
+            Utils.ready();
+          }
+        },
+        error: function (xhr, textStatus, errorThrown) {
+          if (fe) {
+            fe(xhr, textStatus, errorThrown);
+          } else {
+            Utils.ready();
+            console.log('unexpected error on AJAX call');
+          }
+        }
+      });
     },
     getUrlParameter: function getUrlParameter(sParam) {
       var
