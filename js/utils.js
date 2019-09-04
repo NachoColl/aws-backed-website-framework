@@ -211,7 +211,7 @@ var Utils = (function () {
     },
     timeOffset: function () {
       var offset = new Date().getTimezoneOffset();
-      return offset.toString().substr(0, 1) + Utils.pad(offset.toString().substr(1) / 60, 2);
+      return (offset.toString().substr(0, 1) === '-' ? '+' : '-') + Utils.pad(offset.toString().substr(1) / 60, 2);
     }
   };
 }());
