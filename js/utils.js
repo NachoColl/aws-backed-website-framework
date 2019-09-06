@@ -9,6 +9,7 @@ token
 var Utils = (function () {
   'use strict';
   var
+    loadingTimeoutHandle,
     s4 = function () {
       return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
     },
@@ -153,12 +154,14 @@ var Utils = (function () {
       }
     },
     loading: function (button) {
+      $('.loading-long').hide(); clearTimeout(loadingTimeoutHandle);
       $('.btn:not(.btn-noaction)').not('.editor-command').addClass('disabled');
       if (button) {
         $('#' + button + '-loading').show();
       } else {
         $('.loading').show();
       }
+      loadingTimeoutHandle = setTimeout(function () { $('.loading-long').show(); }, 2000);
     },
     goHome: function () {
       window.location.href = "index.html";
