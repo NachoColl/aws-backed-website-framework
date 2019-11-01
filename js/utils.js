@@ -1,8 +1,7 @@
 /*jslint browser: true, devel: true, white: true */
 /*global
 $,window,
-AWS,AWSConstants,
-token
+AWS,AWSConstants
 */
 
 
@@ -47,7 +46,7 @@ var Utils = (function () {
           'X-Api-Key': k
         } : {
             'Content-Type': 'application/json',
-            'Authorization': token,
+            'Authorization': Cookies.get('idToken'),
             'IdentityId': AWS.config.credentials.identityId
           };
 

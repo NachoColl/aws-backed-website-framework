@@ -35,7 +35,6 @@ var
 /* for logged user */
 var
   cognitoUser = null,
-  token = Cookies.get('idToken'),
   refreshToken = Cookies.get('refreshToken');
 
 var
@@ -155,7 +154,7 @@ var
             Cognito.logout();
           }
         });
-        setTimeout(Cognito.refreshTokens, 1200000); // refresh after 20 minutes.
+        setTimeout(Cognito.refreshTokens, 300000); // refresh after 5 minutes.
       },
       logout: function () {
         Cookies.set('accessToken', '');
@@ -175,12 +174,12 @@ var
       initializePageAuthentication: function (callback) {
 
         if (window.location.href.indexOf(AWSSDKArgs.getAttribute('data-home')) <= 0) {
-          if (!token || !refreshToken) {
+          if (!Cookies.get('idToken') || !Cookies.get('refreshToken')) {
             Cognito.logout();
           } else {
             // Initialize AWS SDK
             var logins = {};
-            logins[ AWSConstants.cognitoEndpoint + "/" + AWSConstants.userPoolId ] = token;
+            logins[ AWSConstants.cognitoEndpoint + "/" + AWSConstants.userPoolId ] = Cookies.get('idToken');
             AWS.config.credentials = new AWS.CognitoIdentityCredentials({
               IdentityPoolId: AWSConstants.identityPoolId,
               Logins: logins
