@@ -1,0 +1,9 @@
+{
+  "name": "@NachoColl/website-frameworks",
+  "version": "1.0.0",
+  "description": "nachocoll website frameworks",
+  "repository": "git://github.com/NachoColl/aws-backed-website-framework",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  }
+}

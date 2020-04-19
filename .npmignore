@@ -1,0 +1,6 @@
+# gulp dev
+.gulp
+
+#npm publish related
+.npmignore
+.npmrc
