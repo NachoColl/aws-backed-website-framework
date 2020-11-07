@@ -166,14 +166,14 @@ var
         }
         AWS.config.credentials.clearCachedId();
         if (window.location.href.indexOf('127.0.0.1:') <= 0) {
-          window.location.href = AWSSDKArgs.getAttribute('data-home');
+          window.location.href = AWSSDKArgs.getAttribute('data-frontpage');
         } else {
           window.location.href = '/src/UI/index.html';
         }
       },
       initializePageAuthentication: function (callback) {
 
-        if (window.location.href.indexOf(AWSSDKArgs.getAttribute('data-home')) <= 0) {
+        if (window.location.href.indexOf(AWSSDKArgs.getAttribute('data-frontpage')) <= 0) {
           if (!Cookies.get('idToken') || !Cookies.get('refreshToken')) {
             Cognito.logout();
           } else {
