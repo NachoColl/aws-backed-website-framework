@@ -18,7 +18,7 @@ var
     samlRedirect: AWSSDKArgs.getAttribute('data-samlRedirect'),
     samlEndpoint: 'https://' + AWSSDKArgs.getAttribute('data-samlDomain') + '.auth.eu-west-1.amazoncognito.com/authorize?idp_identifier=' + AWSSDKArgs.getAttribute('data-samlIdentifier') + '&response_type=code&client_id=' + AWSSDKArgs.getAttribute('data-clientId') +  '&redirect_uri=' + AWSSDKArgs.getAttribute('data-samlRedirect'),
     samlTokenEndpoint: 'https://' + AWSSDKArgs.getAttribute('data-samlDomain') + '.auth.eu-west-1.amazoncognito.com/oauth2/token',
-    /* apiEndpoint must implement cognito/reset and cognito/confirm APIs */
+    /* apiEndpoint must implement cognito/reset and cognito/confirm APIs for email/password users */
     apiEndpoint: AWSSDKArgs.getAttribute('data-apiEndpoint')
   };
 
@@ -129,88 +129,9 @@ var
             }
           }
         });
-      },
-      refreshTokens: function () {
-        userPool.client.makeUnauthenticatedRequest('initiateAuth', {
-          ClientId: AWSConstants.clientId,
-          AuthFlow: 'REFRESH_TOKEN_AUTH',
-          AuthParameters: {
-            "REFRESH_TOKEN": refreshToken
-          }
-        }, function (err, authResult) {
-          if (!err) {
-            Cookies.set('accessToken', authResult.AuthenticationResult.AccessToken);
-            Cookies.set('idToken', authResult.AuthenticationResult.IdToken);
-            var logins = {};
-            logins[ AWSConstants.cognitoEndpoint + "/" + AWSConstants.userPoolId ] = authResult.AuthenticationResult.IdToken;
-            AWS.config.update({
-              credentials: new AWS.CognitoIdentityCredentials({
-                IdentityPoolId: AWSConstants.identityPoolId,
-                Logins: logins
-              })
-            });
-            AWS.config.credentials.get(function (err) {
-              if (err) {
-                console.log(err, err.stack);
-              }
-            });
-          } else {
-            console.log(err, err.stack);
-            Cognito.logout();
-          }
-        });
-        setTimeout(Cognito.refreshTokens, 300000); // refresh after 5 minutes.
-      },
-      logout: function () {      
-        Cookies.set('accessToken', '');
-        Cookies.set('idToken', '');
-        Cookies.set('refreshToken', '');
-        if (cognitoUser !== null) {
-          cognitoUser.signOut();
-          cognitoUser = null;
-        }
-        AWS.config.credentials.clearCachedId();
-        if (window.location.href.indexOf('127.0.0.1:') <= 0) {
-          window.location.href = AWSSDKArgs.getAttribute('data-frontpage');
-        } else {
-          window.location.href = '/src/UI/index.html';
-        }
-      },
-      initializePageAuthentication: function (callback) {
-        if (window.location.href.indexOf(AWSSDKArgs.getAttribute('data-frontpage')) <= 0) {
-          if (!Cookies.get('idToken') || !Cookies.get('refreshToken')) {
-            Cognito.logout();
-          } else {
-
-            Cognito.refreshTokens();
-            /*
-            var logins = {};
-            logins[ AWSConstants.cognitoEndpoint + "/" + AWSConstants.userPoolId ] = Cookies.get('idToken');
-            AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-              IdentityPoolId: AWSConstants.identityPoolId,
-              Logins: logins
-            });
-          
-            AWS.config.credentials.get(function (err) {
-              if (err) {
-                console.log(err, err.stack);
-              } else {
-                if (typeof callback !== 'undefined' && $.isFunction(callback)) {
-                  callback();
-                }
-              }
-            });
-            */
-          }
-        } else {
-          if (typeof callback !== 'undefined' && $.isFunction(callback)) {
-            callback();
-          }
-        }
-      },
-      /* https://tools.ietf.org/html/rfc6749#section-4.1 */
+      },     
       samlSignin: function (callback,fe) {
-        
+        /* https://tools.ietf.org/html/rfc6749#section-4.1 */
         if (window.location.href.indexOf(AWSSDKArgs.getAttribute('data-frontpage')) > 0 && Utils.getUrlParameter("code")) {
           console.log(window.location.href.indexOf(AWSSDKArgs.getAttribute('data-frontpage')) > 0);
           /* ask for tokens */
@@ -244,6 +165,68 @@ var
             callback();
           }
         } 
+      },
+      refreshTokens: function (callback) {
+        userPool.client.makeUnauthenticatedRequest('initiateAuth', {
+          ClientId: AWSConstants.clientId,
+          AuthFlow: 'REFRESH_TOKEN_AUTH',
+          AuthParameters: {
+            "REFRESH_TOKEN": refreshToken
+          }
+        }, function (err, authResult) {
+          if (!err) {
+            Cookies.set('accessToken', authResult.AuthenticationResult.AccessToken);
+            Cookies.set('idToken', authResult.AuthenticationResult.IdToken);
+            var logins = {};
+            logins[ AWSConstants.cognitoEndpoint + "/" + AWSConstants.userPoolId ] = authResult.AuthenticationResult.IdToken;
+            AWS.config.update({
+              credentials: new AWS.CognitoIdentityCredentials({
+                IdentityPoolId: AWSConstants.identityPoolId,
+                Logins: logins
+              })
+            });
+            AWS.config.credentials.get(function (err) {
+              if (err) {
+                console.log(err, err.stack);
+              }
+            });
+          } else {
+            console.log(err, err.stack);
+            Cognito.logout();
+          }
+        });
+        setTimeout(Cognito.refreshTokens, 300000); // refresh after 5 minutes.
+        if (typeof callback !== 'undefined' && $.isFunction(callback)) {
+          callback();
+        }
+      },
+      logout: function () {      
+        Cookies.set('accessToken', '');
+        Cookies.set('idToken', '');
+        Cookies.set('refreshToken', '');
+        if (cognitoUser !== null) {
+          cognitoUser.signOut();
+          cognitoUser = null;
+        }
+        AWS.config.credentials.clearCachedId();
+        if (window.location.href.indexOf('127.0.0.1:') <= 0) {
+          window.location.href = AWSSDKArgs.getAttribute('data-frontpage');
+        } else {
+          window.location.href = '/src/UI/index.html';
+        }
+      },
+      initializePageAuthentication: function (callback) {
+        if (window.location.href.indexOf(AWSSDKArgs.getAttribute('data-frontpage')) <= 0) {
+          if (!Cookies.get('idToken') || !Cookies.get('refreshToken')) {
+            Cognito.logout();
+          } else {
+            Cognito.refreshTokens(callback);
+          }
+        } else {
+          if (typeof callback !== 'undefined' && $.isFunction(callback)) {
+            callback();
+          }
+        }
       }
     };
   }());
