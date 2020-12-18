@@ -161,8 +161,7 @@ var
         });
         setTimeout(Cognito.refreshTokens, 300000); // refresh after 5 minutes.
       },
-      logout: function () {
-        /*
+      logout: function () {      
         Cookies.set('accessToken', '');
         Cookies.set('idToken', '');
         Cookies.set('refreshToken', '');
@@ -176,22 +175,22 @@ var
         } else {
           window.location.href = '/src/UI/index.html';
         }
-        */
       },
       initializePageAuthentication: function (callback) {
         if (window.location.href.indexOf(AWSSDKArgs.getAttribute('data-frontpage')) <= 0) {
           if (!Cookies.get('idToken') || !Cookies.get('refreshToken')) {
             Cognito.logout();
           } else {
-            // Initialize AWS SDK
+
+            Cognito.refreshTokens();
+            /*
             var logins = {};
             logins[ AWSConstants.cognitoEndpoint + "/" + AWSConstants.userPoolId ] = Cookies.get('idToken');
             AWS.config.credentials = new AWS.CognitoIdentityCredentials({
               IdentityPoolId: AWSConstants.identityPoolId,
               Logins: logins
             });
-
-            Cognito.refreshTokens();
+          
             AWS.config.credentials.get(function (err) {
               if (err) {
                 console.log(err, err.stack);
@@ -201,6 +200,7 @@ var
                 }
               }
             });
+            */
           }
         } else {
           if (typeof callback !== 'undefined' && $.isFunction(callback)) {
