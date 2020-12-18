@@ -13,6 +13,11 @@ var
     userPoolId: AWSSDKArgs.getAttribute('data-userPoolId'),
     clientId: AWSSDKArgs.getAttribute('data-clientId'),
     identityPoolId: AWSSDKArgs.getAttribute('data-identityPoolId'),
+    samlDomain: AWSSDKArgs.getAttribute('data-samlDomain'),
+    samlIdentifier: AWSSDKArgs.getAttribute('data-samlIdentifier'),
+    samlRedirect: AWSSDKArgs.getAttribute('data-samlRedirect'),
+    samlEndpoint: 'https://' + AWSSDKArgs.getAttribute('data-samlDomain') + '.auth.eu-west-1.amazoncognito.com/authorize?idp_identifier=' + AWSSDKArgs.getAttribute('data-samlIdentifier') + '&response_type=code&client_id=' + AWSSDKArgs.getAttribute('data-clientId') +  '&redirect_uri=' + AWSSDKArgs.getAttribute('data-samlRedirect'),
+    samlTokenEndpoint: 'https://' + AWSSDKArgs.getAttribute('data-samlDomain') + '.auth.eu-west-1.amazoncognito.com/oauth2/token',
     /* apiEndpoint must implement cognito/reset and cognito/confirm APIs */
     apiEndpoint: AWSSDKArgs.getAttribute('data-apiEndpoint')
   };
@@ -125,7 +130,6 @@ var
           }
         });
       },
-
       refreshTokens: function () {
         userPool.client.makeUnauthenticatedRequest('initiateAuth', {
           ClientId: AWSConstants.clientId,
@@ -151,12 +155,14 @@ var
               }
             });
           } else {
+            console.log(err, err.stack);
             Cognito.logout();
           }
         });
         setTimeout(Cognito.refreshTokens, 300000); // refresh after 5 minutes.
       },
       logout: function () {
+        /*
         Cookies.set('accessToken', '');
         Cookies.set('idToken', '');
         Cookies.set('refreshToken', '');
@@ -170,9 +176,9 @@ var
         } else {
           window.location.href = '/src/UI/index.html';
         }
+        */
       },
       initializePageAuthentication: function (callback) {
-
         if (window.location.href.indexOf(AWSSDKArgs.getAttribute('data-frontpage')) <= 0) {
           if (!Cookies.get('idToken') || !Cookies.get('refreshToken')) {
             Cognito.logout();
@@ -201,6 +207,43 @@ var
             callback();
           }
         }
+      },
+      /* https://tools.ietf.org/html/rfc6749#section-4.1 */
+      samlSignin: function (callback,fe) {
+        
+        if (window.location.href.indexOf(AWSSDKArgs.getAttribute('data-frontpage')) > 0 && Utils.getUrlParameter("code")) {
+          console.log(window.location.href.indexOf(AWSSDKArgs.getAttribute('data-frontpage')) > 0);
+          /* ask for tokens */
+          $.ajax({
+            method: 'POST',
+            url: AWSConstants.samlTokenEndpoint,
+            data: 'grant_type=authorization_code&client_id=' +  AWSConstants.clientId + '&code=' + Utils.getUrlParameter("code") + '&redirect_uri=' + AWSConstants.samlRedirect,
+            headers: {
+              'content-type':'application/x-www-form-urlencoded'
+            },
+            dataType: 'json',
+            success: function (response) {
+              console.log(response);
+              Cookies.set('accessToken', response.access_token);
+              Cookies.set('idToken', response.id_token);
+              Cookies.set('refreshToken', response.refresh_token);
+              window.location.href = AWSSDKArgs.getAttribute('data-home');
+            },
+            error: function (xhr, textStatus, errorThrown) {
+              if (fe) {
+                fe(xhr, textStatus, errorThrown);
+              } else {
+                Utils.ready();
+                console.log('unexpected error on AJAX call');
+              }
+            }
+          });
+           
+        }else{
+          if (typeof callback !== 'undefined' && $.isFunction(callback)) {
+            callback();
+          }
+        } 
       }
     };
   }());
