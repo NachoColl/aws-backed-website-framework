@@ -141,8 +141,9 @@ var Utils = (function () {
     ready: function (button, disabledCheck) {
       $('.btn:not(.btn-noaction)').not('.editor-command').removeClass('disabled');
       if (button) {
+        $('#' + button + '-loading-long').hide();
         if (disabledCheck) {
-          $('#' + button + '-loading').hide();
+          $('#' + button + '-loading').hide();        
         } else {
           $('#' + button + '-loading').removeClass('fa-circle-o-notch fa-spin').addClass('fa-check text-success').fadeIn();
           setTimeout(function () {
@@ -151,6 +152,7 @@ var Utils = (function () {
         }
       } else {
         $('.loading').hide();
+        $('.loading-long').hide();
       }
     },
     loading: function (button) {
