@@ -160,10 +160,10 @@ var Utils = (function () {
       $('.btn:not(.btn-noaction)').not('.editor-command').addClass('disabled');
       if (button) {
         $('#' + button + '-loading').show();
-        loadingTimeoutHandle = setTimeout(function () { $('#' + button + '-loading-long').show(); }, 2000);
+        loadingTimeoutHandle = setTimeout(function () { if (!Utils.isHidden($('#' + button + '-loading'))) $('#' + button + '-loading-long').show(); }, 2000);
       } else {
         $('.loading').show();
-        loadingTimeoutHandle = setTimeout(function () { $('.loading-long').show(); }, 2000);
+        loadingTimeoutHandle = setTimeout(function () { if (!Utils.isHidden($('#' + button + '-loading'))) $('.loading-long').show(); }, 2000);
       }
       
     },
@@ -231,6 +231,10 @@ var Utils = (function () {
       if (typeof callback !== 'undefined' && $.isFunction(callback)) {
             callback();
       }
+    },
+    isHidden: function(el){
+      var style = window.getComputedStyle(el);
+      return (style.display === 'none')
     }
   };
 }());
