@@ -130,10 +130,10 @@ var
           }
         });
       },     
-      samlSignin: function (callback,fe) {
+      samlSignin: function (loginin, callback,fe) {
         /* https://tools.ietf.org/html/rfc6749#section-4.1 */
-        if (window.location.href.indexOf(AWSSDKArgs.getAttribute('data-frontpage')) > 0 && Utils.getUrlParameter("code")) {
-          console.log(window.location.href.indexOf(AWSSDKArgs.getAttribute('data-frontpage')) > 0);
+        if (window.location.href.indexOf(AWSSDKArgs.getAttribute('data-frontpage')) > 0 && Utils.getUrlParameter("code")) {   
+          Utils.callCallback(loginin);
           /* ask for tokens */
           $.ajax({
             method: 'POST',
@@ -151,7 +151,7 @@ var
               window.location.href = AWSSDKArgs.getAttribute('data-home');
             },
             error: function (xhr, textStatus, errorThrown) {
-              if (fe) {
+              if (Utils.isCallback(fe)) {
                 fe(xhr, textStatus, errorThrown);
               } else {
                 Utils.ready();
@@ -161,9 +161,7 @@ var
           });
            
         }else{
-          if (typeof callback !== 'undefined' && $.isFunction(callback)) {
-            callback();
-          }
+          Utils.callCallback(callback);       
         } 
       },
       refreshTokens: function (callback) {
