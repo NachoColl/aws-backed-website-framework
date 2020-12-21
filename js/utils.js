@@ -160,10 +160,10 @@ var Utils = (function () {
       $('.btn:not(.btn-noaction)').not('.editor-command').addClass('disabled');
       if (button) {
         $('#' + button + '-loading').show();
-        loadingTimeoutHandle = setTimeout(function () { if (!Utils.isHidden($('#' + button + '-loading'))) $('#' + button + '-loading-long').show(); }, 2000);
+        loadingTimeoutHandle = setTimeout(function () { if (Utils.isVisible($('#' + button + '-loading'))) $('#' + button + '-loading-long').show(); }, 2000);
       } else {
         $('.loading').show();
-        loadingTimeoutHandle = setTimeout(function () { if (!Utils.isHidden($('#' + button + '-loading'))) $('.loading-long').show(); }, 2000);
+        loadingTimeoutHandle = setTimeout(function () { if (Utils.isVisible($('.loading'))) $('.loading-long').show(); }, 2000);
       }
       
     },
@@ -232,9 +232,8 @@ var Utils = (function () {
             callback();
       }
     },
-    isHidden: function(el){
-      var style = window.getComputedStyle(el);
-      return (style.display === 'none')
+    isVisible: function(el){
+      return el.is(":visible")
     }
   };
 }());
