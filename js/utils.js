@@ -158,10 +158,12 @@ var Utils = (function () {
       $('.btn:not(.btn-noaction)').not('.editor-command').addClass('disabled');
       if (button) {
         $('#' + button + '-loading').show();
+        loadingTimeoutHandle = setTimeout(function () { $('#' + button + '-loading-long').show(); }, 2000);
       } else {
         $('.loading').show();
+        loadingTimeoutHandle = setTimeout(function () { $('.loading-long').show(); }, 2000);
       }
-      loadingTimeoutHandle = setTimeout(function () { $('.loading-long').show(); }, 2000);
+      
     },
     goHome: function () {
       window.location.href = "index.html";
