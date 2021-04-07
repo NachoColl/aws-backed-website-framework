@@ -132,6 +132,7 @@ var
       },     
       samlSignin: function (loginin, callback,fe) {
         /* https://tools.ietf.org/html/rfc6749#section-4.1 */
+        
         if (Utils.getUrlParameter("code")) {   
           Utils.callCallback(loginin);
           /* ask for tokens */
