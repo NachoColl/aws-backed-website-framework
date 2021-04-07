@@ -112,9 +112,9 @@ var
                 Cognito Identity or when passing through an Authorization Header to an API
                 Gateway Authorizer
             */
-            Cookies.set('accessToken', result.getAccessToken().getJwtToken());
-            Cookies.set('idToken', result.idToken.jwtToken);
-            Cookies.set('refreshToken', result.refreshToken.token);
+            Cookies.set('accessToken', result.getAccessToken().getJwtToken(), {sameSite: 'None', secure: true});
+            Cookies.set('idToken', result.idToken.jwtToken, {sameSite: 'None', secure: true});
+            Cookies.set('refreshToken', result.refreshToken.token, {sameSite: 'None', secure: true});
             refreshToken = new AWSCognito.CognitoIdentityServiceProvider.CognitoRefreshToken({
               RefreshToken: result.refreshToken.token,
               IdToken: result.idToken.jwtToken
@@ -146,9 +146,9 @@ var
             dataType: 'json',
             success: function (response) {
               console.log(response);
-              Cookies.set('accessToken', response.access_token);
-              Cookies.set('idToken', response.id_token);
-              Cookies.set('refreshToken', response.refresh_token);
+              Cookies.set('accessToken', response.access_token, {sameSite: 'None', secure: true});
+              Cookies.set('idToken', response.id_token, {sameSite: 'None', secure: true});
+              Cookies.set('refreshToken', response.refresh_token, {sameSite: 'None', secure: true});
               console.log(Cookies.get('idToken'));
               window.location.href = AWSSDKArgs.getAttribute('data-home');
             },
@@ -175,8 +175,8 @@ var
           }
         }, function (err, authResult) {
           if (!err) {
-            Cookies.set('accessToken', authResult.AuthenticationResult.AccessToken);
-            Cookies.set('idToken', authResult.AuthenticationResult.IdToken);
+            Cookies.set('accessToken', authResult.AuthenticationResult.AccessToken, {sameSite: 'None', secure: true});
+            Cookies.set('idToken', authResult.AuthenticationResult.IdToken, {sameSite: 'None', secure: true});
             var logins = {};
             logins[ AWSConstants.cognitoEndpoint + "/" + AWSConstants.userPoolId ] = authResult.AuthenticationResult.IdToken;
             AWS.config.update({
@@ -201,9 +201,9 @@ var
         }
       },
       logout: function () {      
-        Cookies.set('accessToken', '');
-        Cookies.set('idToken', '');
-        Cookies.set('refreshToken', '');
+        Cookies.set('accessToken', '',{sameSite: 'None', secure: true});
+        Cookies.set('idToken', '', {sameSite: 'None', secure: true});
+        Cookies.set('refreshToken', '', {sameSite: 'None', secure: true});
         if (cognitoUser !== null) {
           cognitoUser.signOut();
           cognitoUser = null;
