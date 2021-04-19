@@ -16,8 +16,8 @@ var
     samlDomain: AWSSDKArgs.getAttribute('data-samlDomain'),
     samlIdentifier: AWSSDKArgs.getAttribute('data-samlIdentifier'),
     samlRedirect: AWSSDKArgs.getAttribute('data-samlRedirect'),
-    samlEndpoint: 'https://' + AWSSDKArgs.getAttribute('data-samlDomain') + '.auth.eu-west-1.amazoncognito.com/authorize?idp_identifier=' + AWSSDKArgs.getAttribute('data-samlIdentifier') + '&identity_provider=' + AWSSDKArgs.getAttribute('data-samlIdentifier') + '&response_type=code&client_id=' + AWSSDKArgs.getAttribute('data-clientId') +  '&redirect_uri=' + AWSSDKArgs.getAttribute('data-samlRedirect'),
-    samlTokenEndpoint: 'https://' + AWSSDKArgs.getAttribute('data-samlDomain') + '.auth.eu-west-1.amazoncognito.com/oauth2/token',
+    samlEndpoint: 'https://' + AWSSDKArgs.getAttribute('data-samlDomain') + '.auth.' + AWSSDKArgs.getAttribute('data-region') + '.amazoncognito.com/authorize?idp_identifier=' + AWSSDKArgs.getAttribute('data-samlIdentifier') + '&identity_provider=' + AWSSDKArgs.getAttribute('data-samlIdentifier') + '&response_type=code&client_id=' + AWSSDKArgs.getAttribute('data-clientId') +  '&redirect_uri=' + AWSSDKArgs.getAttribute('data-samlRedirect'),
+    samlTokenEndpoint: 'https://' + AWSSDKArgs.getAttribute('data-samlDomain') + '.auth.' + AWSSDKArgs.getAttribute('data-region') + '.amazoncognito.com/oauth2/token',
     /* apiEndpoint must implement cognito/reset and cognito/confirm APIs for email/password users */
     apiEndpoint: AWSSDKArgs.getAttribute('data-apiEndpoint')
   };
